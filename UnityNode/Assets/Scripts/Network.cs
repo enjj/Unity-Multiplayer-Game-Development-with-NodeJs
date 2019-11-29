@@ -13,7 +13,12 @@ public class Network : MonoBehaviour {
         socket = GetComponent<SocketIOComponent>();
         socket.On("open", OnConnected);  //neden parantez yok ? 
         socket.On("spawn", OnSpawned);
+        socket.On("move", OnMove);
 
+    }
+
+    private void OnMove(SocketIOEvent e) {
+        Debug.Log("player is moving" + e.data);
     }
 
     private void OnSpawned(SocketIOEvent e) {
@@ -22,7 +27,6 @@ public class Network : MonoBehaviour {
 
     void OnConnected(SocketIOEvent e) {
         Debug.Log("Connected");
-        socket.Emit("move");
     }
 
 }

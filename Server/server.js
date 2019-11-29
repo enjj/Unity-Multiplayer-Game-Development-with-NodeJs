@@ -4,21 +4,27 @@ console.log('server started');
 
 let playerCount = 0;
 
-io.on('connection', (socket) =>{
+io.on('connection', (socket) => {
   console.log('client Connected');
 
   socket.broadcast.emit('spawn');
   playerCount++;
 
-  for(i=0; i < playerCount; i++){
+  for (i = 0; i < playerCount; i++) {
 
     socket.emit('spawn');
     console.log('sending spawn to new player');
 
   }
 
-  socket.on('move', (data) =>{
-    console.log('client moved');
+  socket.on('move', (data) => {
+    console.log('client moved',JSON.stringify(data));
+    socket.broadcast.emit('move', data);
+
+  });
+
+  socket.on('deneme', () => {
+    console.log('whoaa its worked');
   });
 
   socket.on('disconnect', () => {
@@ -27,4 +33,4 @@ io.on('connection', (socket) =>{
 
   })
 
-}) 
+})
