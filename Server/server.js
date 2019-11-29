@@ -1,35 +1,44 @@
 const io = require('socket.io')(process.env.PORT || 3000);
+var shortid = require('shortid');
 
 console.log('server started');
 
-let playerCount = 0;
+var players = [];
 
 io.on('connection', (socket) => {
   console.log('client Connected');
 
+  var thisClientId = shortid.generate();
+  
+  players.push(thisClientId);
+
+  console.log('client conencted id:', thisClientId);
+
   socket.broadcast.emit('spawn');
-  playerCount++;
 
-  for (i = 0; i < playerCount; i++) {
+  //players who connected lately can see other players who connected before 
+  players.forEach((playerId) => {
+    if (playerId == thisClientId)
+      return;
 
-    socket.emit('spawn');
-    console.log('sending spawn to new player');
+    socket.emit('spawn', {
+      id: playerId
+    });
 
-  }
+    console.log('sending spawn to new player for id :', playerId);
+
+  })
 
   socket.on('move', (data) => {
-    console.log('client moved',JSON.stringify(data));
+    data.id = thisClientId;
+    console.log('client moved', JSON.stringify(data));
     socket.broadcast.emit('move', data);
 
   });
 
-  socket.on('deneme', () => {
-    console.log('whoaa its worked');
-  });
-
   socket.on('disconnect', () => {
     console.log('client Disconnected');
-    playerCount--;
+
 
   })
 

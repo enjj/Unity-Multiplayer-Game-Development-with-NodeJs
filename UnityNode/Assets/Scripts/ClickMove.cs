@@ -9,13 +9,13 @@ public class ClickMove : MonoBehaviour {
     NetworkMove netMove;
 
     private void Start() {
-        navPos = player.GetComponent<NavigatePosition>();
-        netMove = player.GetComponent<NetworkMove>();
-
+       
     }
 
     // Update is called once per frame
     public void OnClick(Vector3 pos) {
+        navPos = player.GetComponent<NavigatePosition>();
+        netMove = player.GetComponent<NetworkMove>();
         navPos.navigateTo(pos);
         netMove.OnMove(pos); 
     }
