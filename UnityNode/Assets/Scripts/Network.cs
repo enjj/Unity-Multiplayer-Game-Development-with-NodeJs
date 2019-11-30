@@ -5,11 +5,14 @@ using SocketIO;
 using System;
 
 public class Network : MonoBehaviour {
+
     static SocketIOComponent socket;
 
     public GameObject playerPrefab;
 
     Dictionary<string, GameObject> players;
+
+    public GameObject myPlayer;
 
 
     void Start() {
@@ -20,14 +23,19 @@ public class Network : MonoBehaviour {
         socket.On("spawn", OnSpawned);
         socket.On("move", OnMove);
         socket.On("disconnected", OnDisconnected);
+        socket.On("requestPosition", OnRequestPosition);
+        socket.On("updatePosition", OnUpdatePosition);
     }
 
-    private void OnDisconnected(SocketIOEvent e) {
-        var player = players[e.data["id"].ToString()];
+    private void OnUpdatePosition(SocketIOEvent e) {
+        Debug.Log("updating position" + e.data);
 
-        Destroy(player);
+        Vector3 position = new Vector3(GetFloatFromJson(e.data, "x"), 0, GetFloatFromJson(e.data, "y"));
 
-        players.Remove(e.data["id"].ToString());
+        GameObject player = players[e.data["id"].ToString()];
+
+        player.transform.position = position;
+
     }
 
     private void OnMove(SocketIOEvent e) {
@@ -45,7 +53,13 @@ public class Network : MonoBehaviour {
 
     private void OnSpawned(SocketIOEvent e) {
         Debug.Log("spawned" + e.data);
-        GameObject player = Instantiate(playerPrefab);
+        GameObject player = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity) as GameObject;
+
+       if(e.data["x"]) {
+            Vector3 movePos = new Vector3(GetFloatFromJson(e.data, "x"), 0, GetFloatFromJson(e.data, "y"));
+            NavigatePosition navigatePos = player.GetComponent<NavigatePosition>();
+            navigatePos.navigateTo(movePos);
+        }
 
         players.Add(e.data["id"].ToString(), player);
         Debug.Log("count : " + players.Count);
@@ -56,9 +70,30 @@ public class Network : MonoBehaviour {
         Debug.Log("Connected");
     }
 
+    private void OnRequestPosition(SocketIOEvent e) {
+        Debug.Log("server is requesting position");
+
+        socket.Emit("updatePosition", new JSONObject(VectorToJson(myPlayer.transform.position)));
+    }
+
+
+    private void OnDisconnected(SocketIOEvent e) {
+        var player = players[e.data["id"].ToString()];
+
+        Destroy(player);
+
+        players.Remove(e.data["id"].ToString());
+    }
+
+
     float GetFloatFromJson(JSONObject data, string key) {
 
         return float.Parse(data[key].ToString().Replace("\"", ""));
 
     }
+
+    public static string VectorToJson(Vector3 vec) {
+        return string.Format(@"{{""x"":""{0}"",""y"":""{1}""}}", vec.x, vec.z);
+    }
+
 }

@@ -8,7 +8,7 @@ public class NavigatePosition : MonoBehaviour {
     NavMeshAgent agent;
 
     // Start is called before the first frame update
-    void Start() {
+    void Awake() {
         agent = GetComponent<NavMeshAgent>();
     }
 
