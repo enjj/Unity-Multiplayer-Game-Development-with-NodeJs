@@ -8,29 +8,27 @@ var players = [];
 io.on('connection', (socket) => {
   console.log('client Connected');
 
-  var thisClientId = shortid.generate();
+  var thisPlayerId = shortid.generate();
   
-  players.push(thisClientId);
+  players.push(thisPlayerId);
 
-  console.log('client conencted id:', thisClientId);
+  console.log('client conencted id:', thisPlayerId);
 
-  socket.broadcast.emit('spawn');
+  socket.broadcast.emit('spawn', {id: thisPlayerId});
 
   //players who connected lately can see other players who connected before 
   players.forEach((playerId) => {
-    if (playerId == thisClientId)
+    if (playerId == thisPlayerId)
       return;
 
-    socket.emit('spawn', {
-      id: playerId
-    });
+    socket.emit('spawn', {id: playerId});
 
     console.log('sending spawn to new player for id :', playerId);
 
   })
 
   socket.on('move', (data) => {
-    data.id = thisClientId;
+    data.id = thisPlayerId;
     console.log('client moved', JSON.stringify(data));
     socket.broadcast.emit('move', data);
 
@@ -38,6 +36,8 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     console.log('client Disconnected');
+    players.splice(players.indexOf(thisPlayerId),1);
+    socket.broadcast.emit('disconnected',{id: thisPlayerId});
 
 
   })

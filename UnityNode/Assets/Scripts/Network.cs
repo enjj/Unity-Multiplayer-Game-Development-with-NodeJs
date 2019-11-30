@@ -10,24 +10,34 @@ public class Network : MonoBehaviour {
     public GameObject playerPrefab;
 
     Dictionary<string, GameObject> players;
-    
+
 
     void Start() {
         socket = GetComponent<SocketIOComponent>();
+        players = new Dictionary<string, GameObject>();
+
         socket.On("open", OnConnected);  //neden parantez yok ? 
         socket.On("spawn", OnSpawned);
         socket.On("move", OnMove);
-        players = new Dictionary<string, GameObject>();
-        
+        socket.On("disconnected", OnDisconnected);
+    }
 
+    private void OnDisconnected(SocketIOEvent e) {
+        var player = players[e.data["id"].ToString()];
+
+        Destroy(player);
+
+        players.Remove(e.data["id"].ToString());
     }
 
     private void OnMove(SocketIOEvent e) {
 
         Debug.Log("player is moving" + e.data);
+
         Vector3 pos = new Vector3(GetFloatFromJson(e.data, "x"), 0, GetFloatFromJson(e.data, "y"));
 
         GameObject player = players[e.data["id"].ToString()];
+
         NavigatePosition navigatePos = player.GetComponent<NavigatePosition>();
 
         navigatePos.navigateTo(pos);
