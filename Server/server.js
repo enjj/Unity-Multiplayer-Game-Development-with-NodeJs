@@ -19,9 +19,9 @@ io.on('connection', (socket) => {
   players[thisPlayerId] = player;
 
   console.log('client conencted id:', thisPlayerId);
-
+  socket.emit('register', { id: thisPlayerId});
   socket.broadcast.emit('spawn', {id: thisPlayerId});
-  socket.broadcast.emit('requestPosition'); 
+  socket.broadcast.emit('requestPosition' ); 
 
   //players who connected lately can see other players who connected before 
 
@@ -54,14 +54,20 @@ io.on('connection', (socket) => {
     socket.broadcast.emit('updatePosition' , data);
   });
 
+  socket.on('follow', (data) => {
+    console.log("follow request: ", data);
+
+    data.id = thisPlayerId;
+
+    socket.broadcast.emit('follow' , data);
+  });
+
   socket.on('disconnect', () => {
     console.log('client Disconnected');
 
     delete players[thisPlayerId];
 
     socket.broadcast.emit('disconnected',{id: thisPlayerId});
-
-
   })
 
 })

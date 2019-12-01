@@ -8,23 +8,38 @@ public class Network : MonoBehaviour {
 
     static SocketIOComponent socket;
 
-    public GameObject playerPrefab;
-
-    Dictionary<string, GameObject> players;
+    public Spawner spawner;
 
     public GameObject myPlayer;
 
 
     void Start() {
         socket = GetComponent<SocketIOComponent>();
-        players = new Dictionary<string, GameObject>();
 
-        socket.On("open", OnConnected);  //neden parantez yok ? 
+        socket.On("open", OnConnected);
+        socket.On("register", OnRegister);
         socket.On("spawn", OnSpawned);
         socket.On("move", OnMove);
+        socket.On("follow", OnFollow);
         socket.On("disconnected", OnDisconnected);
         socket.On("requestPosition", OnRequestPosition);
         socket.On("updatePosition", OnUpdatePosition);
+    }
+
+    private void OnRegister(SocketIOEvent e) {
+        Debug.Log("succesfully registered with id: " + e.data);
+        spawner.AddPlayer(e.data["id"].str, myPlayer);
+    }
+
+    private void OnFollow(SocketIOEvent e) {
+        Debug.Log("follow request" + e.data);
+
+        GameObject player = spawner.FindPlayer(e.data["id"].str);
+        GameObject target = spawner.FindPlayer(e.data["targetId"].str);
+
+
+        var follower = player.GetComponent<Follower>();
+        follower.target = target.transform;
     }
 
     private void OnUpdatePosition(SocketIOEvent e) {
@@ -32,37 +47,46 @@ public class Network : MonoBehaviour {
 
         Vector3 position = new Vector3(GetFloatFromJson(e.data, "x"), 0, GetFloatFromJson(e.data, "y"));
 
-        GameObject player = players[e.data["id"].ToString()];
+        GameObject player = spawner.FindPlayer(e.data["id"].str);
 
         player.transform.position = position;
 
     }
 
-    private void OnMove(SocketIOEvent e) {
+    public static void Move(Vector3 pos) {
+        socket.Emit("move", new JSONObject(Network.VectorToJson(pos)));
+        //send position to node
+        Debug.Log("sending pos to node" + Network.VectorToJson(pos));
+    }
 
+    public static void Follow(string id) {
+        socket.Emit("follow", new JSONObject(Network.idToJson(id)));
+        //send position to node
+        Debug.Log("sending pos to node" + Network.idToJson(id));
+    }
+
+
+    private void OnMove(SocketIOEvent e) {
         Debug.Log("player is moving" + e.data);
 
         Vector3 pos = new Vector3(GetFloatFromJson(e.data, "x"), 0, GetFloatFromJson(e.data, "y"));
 
-        GameObject player = players[e.data["id"].ToString()];
+        GameObject player = spawner.FindPlayer(e.data["id"].str);
 
-        NavigatePosition navigatePos = player.GetComponent<NavigatePosition>();
+        Navigator navigatePos = player.GetComponent<Navigator>();
 
         navigatePos.navigateTo(pos);
     }
 
     private void OnSpawned(SocketIOEvent e) {
         Debug.Log("spawned" + e.data);
-        GameObject player = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity) as GameObject;
+        GameObject player = spawner.SpawnPlayer(e.data["id"].str);
 
-       if(e.data["x"]) {
+        if (e.data["x"]) {
             Vector3 movePos = new Vector3(GetFloatFromJson(e.data, "x"), 0, GetFloatFromJson(e.data, "y"));
-            NavigatePosition navigatePos = player.GetComponent<NavigatePosition>();
+            Navigator navigatePos = player.GetComponent<Navigator>();
             navigatePos.navigateTo(movePos);
         }
-
-        players.Add(e.data["id"].ToString(), player);
-        Debug.Log("count : " + players.Count);
 
     }
 
@@ -78,22 +102,23 @@ public class Network : MonoBehaviour {
 
 
     private void OnDisconnected(SocketIOEvent e) {
-        var player = players[e.data["id"].ToString()];
-
-        Destroy(player);
-
-        players.Remove(e.data["id"].ToString());
+        spawner.Remove(e.data["id"].str);
     }
 
 
     float GetFloatFromJson(JSONObject data, string key) {
 
-        return float.Parse(data[key].ToString().Replace("\"", ""));
+        return float.Parse(data[key].str);
 
     }
 
     public static string VectorToJson(Vector3 vec) {
         return string.Format(@"{{""x"":""{0}"",""y"":""{1}""}}", vec.x, vec.z);
+    }
+
+    public static string idToJson(string id) {
+        return string.Format(@"{{""targetId"":""{0}""}}", id);
+
     }
 
 }
