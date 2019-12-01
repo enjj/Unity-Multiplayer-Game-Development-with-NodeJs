@@ -402,6 +402,8 @@ GameObject:
   - component: {fileID: 918944766877134711}
   - component: {fileID: 466847214}
   - component: {fileID: -7373932690181549259}
+  - component: {fileID: -1088325763050705961}
+  - component: {fileID: 7436396057863217250}
   m_Layer: 0
   m_Name: NetworkPlayer
   m_TagString: Untagged
@@ -490,7 +492,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0341e1ba6ad0634d9bf400ef8cbad78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  myPlayerFollower: {fileID: 0}
+  myPlayer: {fileID: 0}
   networkEntity: {fileID: 0}
 --- !u!136 &466847214
 CapsuleCollider:
@@ -519,6 +521,34 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: 
+--- !u!114 &-1088325763050705961
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4872808207027046966}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8809cb519fd04884696c4aa1b6d21750, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 0}
+--- !u!114 &7436396057863217250
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4872808207027046966}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a784428c6d851574c9d6308462497576, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targeter: {fileID: 0}
+  scanFrequency: 0.5
+  stopFollowDistance: 2
 --- !u!1 &4872808207027046970
 GameObject:
   m_ObjectHideFlags: 0

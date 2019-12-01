@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.AI;
 
 public class Follower : MonoBehaviour {
-    public Transform target;
+    public Targeter targeter;
 
     public float scanFrequency = 0.5f;
     float lastScanTime = 0;
@@ -15,20 +15,17 @@ public class Follower : MonoBehaviour {
 
     private void Start() {
         agent = GetComponent<NavMeshAgent>();
+        targeter = GetComponent<Targeter>();
     }
    
     private void Update() {
-        if (isReadyToScan() && isInRange()) {
-            agent.SetDestination(target.position);
+        if (isReadyToScan() && targeter.IsInRange(stopFollowDistance)) {
+            agent.SetDestination(targeter.target.position);
         }
     }
 
-    private bool isInRange() {
-        var distance = Vector3.Distance(target.position , transform.position);
-        return distance > stopFollowDistance;
-    }
 
     private bool isReadyToScan() {
-        return Time.time - lastScanTime > scanFrequency && target;
+        return Time.time - lastScanTime > scanFrequency && targeter.target;
     }
 }

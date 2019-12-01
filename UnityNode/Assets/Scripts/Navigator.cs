@@ -6,18 +6,18 @@ using UnityEngine.AI;
 public class Navigator : MonoBehaviour {
     
     NavMeshAgent agent;
-    Follower follower;
+    Targeter targeter;
 
     // Start is called before the first frame update
     void Awake() {
         agent = GetComponent<NavMeshAgent>();
-        follower = GetComponent<Follower>();
+        targeter = GetComponent<Targeter>();
     }
 
     // Update is called once per frame
     public void navigateTo(Vector3 position) {
         agent.SetDestination(position);
-        follower.target = null;
+        targeter.target = null;
     }
 
     private void Update() {
