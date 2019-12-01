@@ -19,7 +19,7 @@ public class Follower : MonoBehaviour {
     }
    
     private void Update() {
-        if (isReadyToScan() && targeter.IsInRange(stopFollowDistance)) {
+        if (isReadyToScan() && targeter.IsInRangeToFollow(stopFollowDistance)) {
             agent.SetDestination(targeter.target.position);
         }
     }
