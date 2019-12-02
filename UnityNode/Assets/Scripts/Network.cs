@@ -49,6 +49,9 @@ public class Network : MonoBehaviour {
     private void OnAttack(SocketIOEvent e) {
         Debug.Log("reciveced attack " + e.data);
         GameObject targetPlayer = spawner.FindPlayer(e.data["targetId"].str);
+        GameObject attackingPlayer = spawner.FindPlayer(e.data["id"].str);
+        attackingPlayer.GetComponent<Animator>().SetTrigger("Attack");
+
         targetPlayer.GetComponent<Hittable>().health -= 10f;
 
     }

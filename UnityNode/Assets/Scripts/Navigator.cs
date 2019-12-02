@@ -7,17 +7,21 @@ public class Navigator : MonoBehaviour {
     
     NavMeshAgent agent;
     Targeter targeter;
+    Animator animator;
 
     // Start is called before the first frame update
     void Awake() {
         agent = GetComponent<NavMeshAgent>();
         targeter = GetComponent<Targeter>();
+        animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
     public void navigateTo(Vector3 position) {
         agent.SetDestination(position);
         targeter.target = null;
+        animator.SetBool("Attack", false);
+
     }
 
     private void Update() {

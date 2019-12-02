@@ -6,12 +6,14 @@ public class Attacker : MonoBehaviour {
 
     public float attackDistance;
     public float attackRate;
-
     float lastAttackTime = 0;
+
     Targeter targeter;
+    Animator animator;
     // Start is called before the first frame update
     void Start() {
         targeter = GetComponent<Targeter>();
+        
     }
 
     // Update is called once per frame
@@ -23,6 +25,7 @@ public class Attacker : MonoBehaviour {
             lastAttackTime = Time.time;
         }
     }
+
 
     bool isReadyToAttack() {
         return Time.time - lastAttackTime > attackRate && targeter.target;
