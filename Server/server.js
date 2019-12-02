@@ -69,7 +69,7 @@ io.on('connection', (socket) => {
 
     data.id = thisPlayerId;
 
-    socket.broadcast.emit('attack' , data);
+    io.emit('attack' , data);
   });
 
   socket.on('disconnect', () => {

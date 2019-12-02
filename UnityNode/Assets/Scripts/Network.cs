@@ -47,7 +47,10 @@ public class Network : MonoBehaviour {
     }
 
     private void OnAttack(SocketIOEvent e) {
-        Debug.Log("recieced attack " + e.data);
+        Debug.Log("reciveced attack " + e.data);
+        GameObject targetPlayer = spawner.FindPlayer(e.data["targetId"].str);
+        targetPlayer.GetComponent<Hittable>().health -= 10f;
+
     }
 
     private void OnUpdatePosition(SocketIOEvent e) {
@@ -75,7 +78,7 @@ public class Network : MonoBehaviour {
 
     public static void Attack(string targetId) {
         Debug.Log("attacking player : " + Network.idToJson(targetId));
-        socket.Emit("Attack", new JSONObject(Network.idToJson(targetId)));
+        socket.Emit("attack", new JSONObject(Network.idToJson(targetId)));
     }
 
 
