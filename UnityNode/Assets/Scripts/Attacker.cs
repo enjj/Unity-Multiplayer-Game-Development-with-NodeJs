@@ -18,6 +18,8 @@ public class Attacker : MonoBehaviour {
     void Update() {
         if (isReadyToAttack() && targeter.IsInRangeToAttack(attackDistance)) {
             Debug.Log("attacking" + targeter.target.name);
+            var targetId = targeter.target.GetComponent<NetworkEntity>().id;
+            Network.Attack(targetId);
             lastAttackTime = Time.time;
         }
     }

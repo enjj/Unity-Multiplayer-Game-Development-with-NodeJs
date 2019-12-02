@@ -54,12 +54,22 @@ io.on('connection', (socket) => {
     socket.broadcast.emit('updatePosition' , data);
   });
 
+ 
+
   socket.on('follow', (data) => {
     console.log("follow request: ", data);
 
     data.id = thisPlayerId;
 
     socket.broadcast.emit('follow' , data);
+  });
+
+  socket.on('attack', (data) => {
+    console.log("attack request: ", data);
+
+    data.id = thisPlayerId;
+
+    socket.broadcast.emit('attack' , data);
   });
 
   socket.on('disconnect', () => {

@@ -21,10 +21,14 @@ public class Network : MonoBehaviour {
         socket.On("spawn", OnSpawned);
         socket.On("move", OnMove);
         socket.On("follow", OnFollow);
+        socket.On("attack", OnAttack);
         socket.On("disconnected", OnDisconnected);
         socket.On("requestPosition", OnRequestPosition);
         socket.On("updatePosition", OnUpdatePosition);
     }
+
+   
+
 
     private void OnRegister(SocketIOEvent e) {
         Debug.Log("succesfully registered with id: " + e.data);
@@ -40,6 +44,10 @@ public class Network : MonoBehaviour {
 
         Targeter follower = player.GetComponent<Targeter>();
         follower.target = targetTransform;
+    }
+
+    private void OnAttack(SocketIOEvent e) {
+        Debug.Log("recieced attack " + e.data);
     }
 
     private void OnUpdatePosition(SocketIOEvent e) {
@@ -63,6 +71,11 @@ public class Network : MonoBehaviour {
         socket.Emit("follow", new JSONObject(Network.idToJson(id)));
         //send position to node
         Debug.Log("sending pos to node" + Network.idToJson(id));
+    }
+
+    public static void Attack(string targetId) {
+        Debug.Log("attacking player : " + Network.idToJson(targetId));
+        socket.Emit("Attack", new JSONObject(Network.idToJson(targetId)));
     }
 
 
