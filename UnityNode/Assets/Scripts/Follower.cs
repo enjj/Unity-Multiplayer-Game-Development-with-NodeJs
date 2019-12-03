@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+[RequireComponent(typeof(NavMeshAgent), typeof(Targeter))]
 public class Follower : MonoBehaviour {
     public Targeter targeter;
 

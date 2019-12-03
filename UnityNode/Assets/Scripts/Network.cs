@@ -52,7 +52,7 @@ public class Network : MonoBehaviour {
         GameObject attackingPlayer = spawner.FindPlayer(e.data["id"].str);
         attackingPlayer.GetComponent<Animator>().SetTrigger("Attack");
 
-        targetPlayer.GetComponent<Hittable>().health -= 10f;
+        targetPlayer.GetComponent<Hittable>().OnHit();
 
     }
 

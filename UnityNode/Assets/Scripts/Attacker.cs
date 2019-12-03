@@ -7,6 +7,7 @@ public class Attacker : MonoBehaviour {
     public float attackDistance;
     public float attackRate;
     float lastAttackTime = 0;
+    
 
     Targeter targeter;
     Animator animator;
@@ -18,7 +19,7 @@ public class Attacker : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        if (isReadyToAttack() && targeter.IsInRangeToAttack(attackDistance)) {
+        if (isReadyToAttack() && targeter.IsInRangeToAttack(attackDistance) && !targeter.target.GetComponent<Hittable>().IsDead) {
             Debug.Log("attacking" + targeter.target.name);
             var targetId = targeter.target.gameObject.GetComponent<NetworkEntity>().id;
             Network.Attack(targetId);
