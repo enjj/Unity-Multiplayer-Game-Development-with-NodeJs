@@ -19,7 +19,15 @@ public class Attacker : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        if (isReadyToAttack() && targeter.IsInRangeToAttack(attackDistance) && !targeter.target.GetComponent<Hittable>().IsDead) {
+        if (!isReadyToAttack())
+            return;
+
+        if (targeter.target.GetComponent<Hittable>().IsDead) {
+            targeter.target = null;
+            return;
+        }
+
+        if ( targeter.IsInRangeToAttack(attackDistance)) {
             Debug.Log("attacking" + targeter.target.name);
             var targetId = targeter.target.gameObject.GetComponent<NetworkEntity>().id;
             Network.Attack(targetId);
