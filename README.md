@@ -2,7 +2,7 @@
 
 - In this project I've learned how to develop a multiplayer game that allows for real-time game play.
 
-- I have discovered how to create your own multiplayer game with a dedicated server driven by NodeJs. 
+- I've discovered how to create your own multiplayer game with a dedicated server driven by NodeJs. 
 
 - Some of the key takeaways from this project include learning how to create a server authoritative multiplayer game. 
 
@@ -10,7 +10,7 @@
 
 - I've  also learned how to use Nodejs and how to work with WebSockets. 
 
-- I learn cool stuff about synchronizing A.I. over the network in real time. By doing this project, I have a multiplayer game template and you can use to make something simple, or something as complex as a massive multiplayer online game or MMO.
+- I've learned cool stuffs about synchronizing A.I. over the network in real time. By doing this project, I have a multiplayer game template and you can use to make something simple, or something as complex as a massive multiplayer online game or MMO.
 
 - All contributions are welcome.
 
